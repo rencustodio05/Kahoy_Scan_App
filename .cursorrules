@@ -1,0 +1,6 @@
+   Project: Kahoy Scan, offline-first Android app (Flutter 3.x / Dart 3.x).
+   Follow the Figma design exactly (colors, fonts, spacing, radius, icons).
+   Use theme tokens in a central theme file; no hardcoded colors in widgets.
+   Frontend only for now: use mock data and a repository layer so real SQLite,
+   TFLite and REST API can be plugged in later. Keep code clean and modular.
+   No student login or registration screens.
