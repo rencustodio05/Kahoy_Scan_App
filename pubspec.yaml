@@ -69,6 +69,11 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/model/
+    - assets/images/species/acacia/
+    - assets/images/species/big_leafed_mahogany/
+    - assets/images/species/binunga/
+    - assets/images/species/gmelina/
+    - assets/images/species/narra/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

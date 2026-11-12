@@ -2,9 +2,10 @@ import '../models/scan_history.dart';
 import '../models/species.dart';
 
 abstract final class MockData {
-  static const String narraImage = 'assets/images/bark_narra.png';
-  static const String mahoganyImage = 'assets/images/bark_mahogany.png';
-  static const String acaciaImage = 'assets/images/bark_acacia.png';
+  static const String narraImage = 'assets/images/species/narra/Narra.jpg';
+  static const String mahoganyImage =
+      'assets/images/species/big_leafed_mahogany/Mahogany.jpg';
+  static const String acaciaImage = 'assets/images/species/acacia/Acacia.jpg';
 
   // PAALALA: Sample text ang karamihan maliban sa Narra (galing sa Figma).
   // Palitan ng faculty-verified na nilalaman bago ang final na bersyon.
@@ -30,6 +31,11 @@ abstract final class MockData {
           'widely planted along roads, parks and residential areas as an '
           'ornamental shade tree.',
       imagePath: narraImage,
+      gallery: [
+        'assets/images/species/narra/Narra.jpg',
+        'assets/images/species/narra/Narra1.jpg',
+        'assets/images/species/narra/Narra2.jpg',
+      ],
       status: 'Active',
       inModel: true,
       updatedAt: DateTime(2024, 10, 20),
@@ -41,7 +47,11 @@ abstract final class MockData {
       description: 'A fast-growing pioneer tree with smooth to slightly rough bark that often peels in patchy flakes.',
       habitat: 'Open forests, disturbed sites, and roadside edges throughout the Philippines.',
       uses: 'Soil rehabilitation, reforestation, and as a fast-growing shade tree.',
-      imagePath: narraImage,
+      imagePath: 'assets/images/species/binunga/Binunga.jpg',
+      gallery: [
+        'assets/images/species/binunga/Binunga.jpg',
+        'assets/images/species/binunga/Binunga1.jpg',
+      ],
       status: 'Active',
       inModel: true,
       updatedAt: DateTime(2024, 10, 18),
@@ -54,6 +64,11 @@ abstract final class MockData {
       habitat: 'Plantations and secondary forests across Mindanao',
       uses: 'Cabinetry, construction lumber, and shade trees',
       imagePath: mahoganyImage,
+      gallery: [
+        'assets/images/species/big_leafed_mahogany/Mahogany.jpg',
+        'assets/images/species/big_leafed_mahogany/Mahogany1.jpg',
+        'assets/images/species/big_leafed_mahogany/Mahogany2.jpg',
+      ],
       status: 'Active',
       inModel: true,
       updatedAt: DateTime(2024, 10, 18),
@@ -78,6 +93,12 @@ abstract final class MockData {
       habitat: 'Parks, roadsides, and open areas in the lowlands',
       uses: 'Shade tree, furniture, and carving',
       imagePath: acaciaImage,
+      gallery: [
+        'assets/images/species/acacia/Acacia.jpg',
+        'assets/images/species/acacia/Acacia1.jpg',
+        'assets/images/species/acacia/Acacia2.jpg',
+        'assets/images/species/acacia/Acacia3.jpg',
+      ],
       status: 'Active',
       inModel: true,
       updatedAt: DateTime(2024, 10, 15),
@@ -113,7 +134,12 @@ abstract final class MockData {
       description: 'A widely planted plantation species with relatively smooth, pale bark.',
       habitat: 'Tree farms and community woodlots',
       uses: 'Pulp, light construction, and packing crates',
-      imagePath: narraImage,
+      imagePath: 'assets/images/species/gmelina/gmelina.jpg',
+      gallery: [
+        'assets/images/species/gmelina/gmelina.jpg',
+        'assets/images/species/gmelina/gmelina1.jpg',
+        'assets/images/species/gmelina/gmelina2.jpg',
+      ],
       status: 'Active',
       inModel: true,
       updatedAt: DateTime(2024, 8, 28),

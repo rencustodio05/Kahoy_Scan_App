@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -17,7 +18,7 @@ class KahoyStore extends ChangeNotifier {
   static final KahoyStore instance = KahoyStore._();
 
   static const String _dbName = 'kahoy_scan.db';
-  static const int _dbVersion = 1;
+  static const int _dbVersion = 2;
 
   /// Bundled catalog: ang 5 species na na-train. Walang sample scan.
   static const Set<String> _bundledIds = {
@@ -38,8 +39,32 @@ class KahoyStore extends ChangeNotifier {
   Future<void> init() async {
     if (_db != null) return;
     final path = p.join(await getDatabasesPath(), _dbName);
-    _db = await openDatabase(path, version: _dbVersion, onCreate: _onCreate);
+    _db = await openDatabase(
+      path,
+      version: _dbVersion,
+      onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
+    );
     await _reload();
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('ALTER TABLE Species ADD COLUMN Gallery TEXT');
+      for (final s in MockData.species.where(
+        (s) => _bundledIds.contains(s.id),
+      )) {
+        await db.update(
+          'Species',
+          {
+            'ImagePath': s.imagePath,
+            'Gallery': jsonEncode(s.gallery),
+          },
+          where: 'SpeciesID = ?',
+          whereArgs: [s.id],
+        );
+      }
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -52,6 +77,7 @@ class KahoyStore extends ChangeNotifier {
         Habitat TEXT,
         Uses TEXT,
         ImagePath TEXT,
+        Gallery TEXT,
         Highlight TEXT,
         Status TEXT NOT NULL DEFAULT 'Active',
         InModel INTEGER NOT NULL DEFAULT 0,
@@ -176,6 +202,7 @@ class KahoyStore extends ChangeNotifier {
     'Habitat': s.habitat,
     'Uses': s.uses,
     'ImagePath': s.imagePath,
+    'Gallery': jsonEncode(s.gallery),
     'Highlight': s.highlight,
     'Status': s.status,
     'InModel': s.inModel ? 1 : 0,
@@ -190,11 +217,17 @@ class KahoyStore extends ChangeNotifier {
     habitat: (r['Habitat'] as String?) ?? '',
     uses: (r['Uses'] as String?) ?? '',
     imagePath: (r['ImagePath'] as String?) ?? '',
+    gallery: _galleryFromRow(r['Gallery'] as String?),
     highlight: r['Highlight'] as String?,
     status: (r['Status'] as String?) ?? 'Active',
     inModel: (r['InModel'] as int? ?? 0) == 1,
     updatedAt: DateTime.parse(r['UpdatedAt'] as String),
   );
+
+  List<String> _galleryFromRow(String? value) {
+    if (value == null || value.isEmpty) return const [];
+    return (jsonDecode(value) as List<dynamic>).cast<String>();
+  }
 
   ScanHistory _scanFromRow(Map<String, Object?> r) => ScanHistory(
     id: r['ScanID'] as String,

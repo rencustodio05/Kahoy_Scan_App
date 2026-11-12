@@ -231,7 +231,10 @@ class _SpeciesCard extends StatelessWidget {
                   width: 64,
                   height: 64,
                   child: Image(
-                    image: imageFromPath(species.imagePath),
+                    image: ResizeImage(
+                      imageFromPath(species.imagePath),
+                      width: 200,
+                    ),
                     fit: BoxFit.cover,
                     errorBuilder: (_, _, _) => const ColoredBox(
                       color: AppColors.mint,

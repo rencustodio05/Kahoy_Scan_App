@@ -147,7 +147,7 @@ class _SpeciesDetailsScreenState extends State<SpeciesDetailsScreen> {
               itemCount: count,
               onPageChanged: (i) => setState(() => _index = i),
               itemBuilder: (_, i) => Image(
-                image: imageFromPath(_images[i]),
+                image: ResizeImage(imageFromPath(_images[i]), width: 1080),
                 fit: BoxFit.cover,
                 errorBuilder: (_, _, _) => const ColoredBox(
                   color: AppColors.mint,
@@ -234,7 +234,10 @@ class _SpeciesDetailsScreenState extends State<SpeciesDetailsScreen> {
                 borderRadius: BorderRadius.circular(10),
                 child: i < _images.length
                     ? Image(
-                        image: imageFromPath(_images[i]),
+                        image: ResizeImage(
+                          imageFromPath(_images[i]),
+                          width: 200,
+                        ),
                         fit: BoxFit.cover,
                         errorBuilder: (_, _, _) =>
                             const ColoredBox(color: _emptyThumb),
