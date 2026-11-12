@@ -91,7 +91,7 @@ class _SpeciesCatalogScreenState extends State<SpeciesCatalogScreen> {
                   : ListView.separated(
                       padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
                       itemCount: items.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      separatorBuilder: (_, _) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final species = items[index];
                         return _SpeciesCard(
@@ -221,7 +221,7 @@ class _SpeciesCard extends StatelessWidget {
                   child: Image(
                     image: imageFromPath(species.imagePath),
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const ColoredBox(
+                    errorBuilder: (_, _, _) => const ColoredBox(
                       color: AppColors.mint,
                       child: Center(
                         child: Icon(

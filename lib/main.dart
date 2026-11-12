@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'core/theme/app_theme.dart';
+import 'data/store/kahoy_store.dart';
 import 'features/home/home_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await KahoyStore.instance.init();
   runApp(const KahoyScanApp());
 }
 

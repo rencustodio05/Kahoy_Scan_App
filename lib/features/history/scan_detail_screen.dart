@@ -77,7 +77,7 @@ class ScanDetailScreen extends StatelessWidget {
                   child: Image(
                     image: imageFromPath(scan.imagePath),
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const ColoredBox(
+                    errorBuilder: (_, _, _) => const ColoredBox(
                       color: AppColors.mint,
                       child: Center(
                         child: Icon(

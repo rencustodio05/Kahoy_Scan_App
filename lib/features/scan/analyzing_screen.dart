@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../data/models/scan_history.dart';
-import '../../data/services/mock_classifier_service.dart';
 import '../../data/services/photo_storage.dart';
+import '../../data/services/tflite_classifier_service.dart';
 import '../../data/store/kahoy_store.dart';
 import 'low_confidence_screen.dart';
 import 'result_screen.dart';
@@ -56,7 +56,9 @@ class _AnalyzingScreenState extends State<AnalyzingScreen>
   }
 
   Future<void> _runClassifier() async {
-    final result = await MockClassifierService.instance.classify();
+    final result = await TfliteClassifierService.instance.classify(
+      widget.photoBytes,
+    );
     final savedPath = await PhotoStorage.save(widget.photoBytes);
     if (!mounted) return;
 
@@ -65,7 +67,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen>
         ? KahoyStore.instance.speciesByCommonName(result.commonName)
         : null;
 
-    KahoyStore.instance.addScan(
+    await KahoyStore.instance.addScan(
       ScanHistory(
         id: 'scan-${DateTime.now().microsecondsSinceEpoch}',
         speciesId: species?.id,
@@ -74,6 +76,8 @@ class _AnalyzingScreenState extends State<AnalyzingScreen>
         timestamp: DateTime.now(),
       ),
     );
+
+    if (!mounted) return;
 
     if (result.isHighConfidence) {
       Navigator.of(context).pushReplacement(
@@ -120,8 +124,10 @@ class _AnalyzingScreenState extends State<AnalyzingScreen>
               ),
               const SizedBox(height: 16),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.mint,
                   borderRadius: BorderRadius.circular(999),
@@ -137,8 +143,10 @@ class _AnalyzingScreenState extends State<AnalyzingScreen>
               ),
               const SizedBox(height: 40),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: _cardFill,
                   borderRadius: BorderRadius.circular(24),
@@ -190,10 +198,7 @@ class _AnalyzingScreenState extends State<AnalyzingScreen>
       child: Stack(
         alignment: Alignment.center,
         children: [
-          CustomPaint(
-            size: const Size(200, 200),
-            painter: _RingPainter(_spin),
-          ),
+          CustomPaint(size: const Size(200, 200), painter: _RingPainter(_spin)),
           Container(
             width: 152,
             height: 152,

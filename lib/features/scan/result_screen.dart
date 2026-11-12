@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
-import '../../data/services/mock_classifier_service.dart';
+import '../../data/services/classification_result.dart';
 import '../../data/store/kahoy_store.dart';
 import '../catalog/species_details_screen.dart';
 
@@ -58,7 +58,11 @@ class ResultScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 8),
-              _Bar(value: result.confidence, color: AppColors.forest, height: 10),
+              _Bar(
+                value: result.confidence,
+                color: AppColors.forest,
+                height: 10,
+              ),
               const SizedBox(height: 24),
               Text(
                 'Other possible species',
@@ -131,16 +135,17 @@ class ResultScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
- onPressed: () {
-  final species =
-      KahoyStore.instance.speciesByCommonName(result.commonName);
-  if (species == null) return;
-  Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (_) => SpeciesDetailsScreen(species: species),
-    ),
-  );
-},
+                  onPressed: () {
+                    final species = KahoyStore.instance.speciesByCommonName(
+                      result.commonName,
+                    );
+                    if (species == null) return;
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => SpeciesDetailsScreen(species: species),
+                      ),
+                    );
+                  },
                   icon: const Icon(Icons.menu_book_rounded, size: 20),
                   label: Text(
                     'View Species Details',
@@ -183,7 +188,10 @@ class ResultScreen extends StatelessWidget {
                       color: AppColors.forest,
                     ),
                     const SizedBox(width: 6),
-                    Text('Saved to Scan History', style: AppTextStyles.fileMeta),
+                    Text(
+                      'Saved to Scan History',
+                      style: AppTextStyles.fileMeta,
+                    ),
                   ],
                 ),
               ),
@@ -259,8 +267,10 @@ class _HeroImage extends StatelessWidget {
               top: 12,
               right: 12,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.forest,
                   borderRadius: BorderRadius.circular(999),
@@ -348,7 +358,11 @@ class _OtherRow extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 6),
-              _Bar(value: candidate.confidence, color: AppColors.brown, height: 6),
+              _Bar(
+                value: candidate.confidence,
+                color: AppColors.brown,
+                height: 6,
+              ),
             ],
           ),
         ),
@@ -373,7 +387,10 @@ class _Bar extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           DecoratedBox(
-            decoration: BoxDecoration(color: AppColors.mint, borderRadius: radius),
+            decoration: BoxDecoration(
+              color: AppColors.mint,
+              borderRadius: radius,
+            ),
           ),
           FractionallySizedBox(
             alignment: Alignment.centerLeft,

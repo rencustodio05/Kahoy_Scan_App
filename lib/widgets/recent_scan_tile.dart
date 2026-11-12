@@ -45,7 +45,7 @@ class RecentScanTile extends StatelessWidget {
                   width: 64,
                   height: 64,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => const SizedBox(
+                  errorBuilder: (_, _, _) => const SizedBox(
                     width: 64,
                     height: 64,
                     child: ColoredBox(color: AppColors.mint),
@@ -62,9 +62,12 @@ class RecentScanTile extends StatelessWidget {
                         Expanded(
                           child: Text(
                             speciesName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: AppTextStyles.speciesName,
                           ),
                         ),
+                        const SizedBox(width: 8),
                         DecoratedBox(
                           decoration: BoxDecoration(
                             color: isHigh
@@ -105,8 +108,18 @@ class RecentScanTile extends StatelessWidget {
 
 String formatScanTimestamp(DateTime timestamp) {
   const months = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   final hour12 = timestamp.hour % 12 == 0 ? 12 : timestamp.hour % 12;
   final minute = timestamp.minute.toString().padLeft(2, '0');

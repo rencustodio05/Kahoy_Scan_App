@@ -149,7 +149,7 @@ class _SpeciesDetailsScreenState extends State<SpeciesDetailsScreen> {
               itemBuilder: (_, i) => Image(
                 image: imageFromPath(_images[i]),
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const ColoredBox(
+                errorBuilder: (_, _, _) => const ColoredBox(
                   color: AppColors.mint,
                   child: Center(
                     child: Icon(
@@ -236,7 +236,7 @@ class _SpeciesDetailsScreenState extends State<SpeciesDetailsScreen> {
                     ? Image(
                         image: imageFromPath(_images[i]),
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) =>
+                        errorBuilder: (_, _, _) =>
                             const ColoredBox(color: _emptyThumb),
                       )
                     : const SizedBox.shrink(),

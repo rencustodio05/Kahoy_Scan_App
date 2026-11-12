@@ -75,7 +75,7 @@ class ScanHistoryScreen extends StatelessWidget {
                   return ListView.separated(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                     itemCount: scans.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    separatorBuilder: (_, _) => const SizedBox(height: 12),
                     itemBuilder: (context, i) {
                       final scan = scans[i];
                       return _HistoryCard(
@@ -256,7 +256,7 @@ class _Thumb extends StatelessWidget {
       child = Image(
         image: imageFromPath(scan.imagePath),
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => const ColoredBox(
+        errorBuilder: (_, _, _) => const ColoredBox(
           color: AppColors.mint,
           child: Center(
             child: Icon(Icons.park_outlined, size: 28, color: AppColors.forest),
