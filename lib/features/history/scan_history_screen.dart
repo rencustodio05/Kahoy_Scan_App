@@ -59,6 +59,13 @@ class ScanHistoryScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  TextButton(
+                    onPressed: () => _confirmClearHistory(context),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.forest,
+                    ),
+                    child: const Text('Clear history'),
+                  ),
                 ],
               ),
             ),
@@ -98,6 +105,31 @@ class ScanHistoryScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _confirmClearHistory(BuildContext context) async {
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Clear history?'),
+      content: const Text(
+        'This will delete all saved scan records and their local photo files from this device.',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Clear'),
+        ),
+      ],
+    ),
+  );
+
+  if (confirmed != true) return;
+  await KahoyStore.instance.clearHistory();
 }
 
 class _PrivacyBanner extends StatelessWidget {
@@ -181,8 +213,9 @@ class _HistoryCard extends StatelessWidget {
                             style: AppTextStyles.speciesName.copyWith(
                               fontSize: 18,
                               letterSpacing: 0,
-                              fontStyle:
-                                  hasMatch ? FontStyle.normal : FontStyle.italic,
+                              fontStyle: hasMatch
+                                  ? FontStyle.normal
+                                  : FontStyle.italic,
                               color: hasMatch
                                   ? AppColors.forestDeep
                                   : AppColors.brown,
@@ -220,7 +253,9 @@ class _HistoryCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             formatScanTimestamp(scan.timestamp),
-                            style: AppTextStyles.timestamp.copyWith(fontSize: 13),
+                            style: AppTextStyles.timestamp.copyWith(
+                              fontSize: 13,
+                            ),
                           ),
                         ),
                       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/models/scan_history.dart';
@@ -38,6 +39,118 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class _EmptyRecentState extends StatelessWidget {
+  const _EmptyRecentState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              width: 148,
+              height: 148,
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 144,
+                    height: 144,
+                    decoration: const BoxDecoration(
+                      color: AppColors.mint,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  CustomPaint(
+                    size: const Size(116, 116),
+                    painter: _DashedCirclePainter(),
+                  ),
+                  const Icon(Icons.schedule, size: 52, color: AppColors.forest),
+                  Positioned(
+                    right: -4,
+                    bottom: 4,
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: const BoxDecoration(
+                        color: AppColors.amberSoft,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.eco,
+                        size: 22,
+                        color: AppColors.amber,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'No scans yet',
+              style: AppTextStyles.speciesName.copyWith(
+                fontSize: 18,
+                letterSpacing: 0,
+              ),
+            ),
+            const SizedBox(height: 8),
+            RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                style: AppTextStyles.reviewBody.copyWith(
+                  color: AppColors.brown,
+                  height: 1.5,
+                ),
+                children: const [
+                  TextSpan(text: 'Tap '),
+                  TextSpan(
+                    text: 'Scan',
+                    style: TextStyle(
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.forestDeep,
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' to start identifying tree\nbark around you.',
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DashedCirclePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..color = AppColors.forest.withValues(alpha: 0.35);
+
+    final path = Path()..addOval(Offset.zero & size);
+    for (final metric in path.computeMetrics()) {
+      double distance = 0;
+      while (distance < metric.length) {
+        canvas.drawPath(metric.extractPath(distance, distance + 5), paint);
+        distance += 9;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 void _open(BuildContext context, Widget screen) {
@@ -111,16 +224,13 @@ class _HomeBody extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSpacing.lg),
-          if (scans.isEmpty)
-            const Text(
-              'No scans yet. Tap Scan Bark to start.',
-              style: AppTextStyles.timestamp,
-            ),
+          if (scans.isEmpty) const _EmptyRecentState(),
           for (var i = 0; i < scans.length; i++) ...[
             if (i > 0) const SizedBox(height: AppSpacing.md),
             RecentScanTile(
               scan: scans[i],
-              speciesName: KahoyStore.instance
+              speciesName:
+                  KahoyStore.instance
                       .speciesById(scans[i].speciesId)
                       ?.commonName ??
                   'No exact match',

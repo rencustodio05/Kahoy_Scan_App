@@ -56,41 +56,62 @@ class _AnalyzingScreenState extends State<AnalyzingScreen>
   }
 
   Future<void> _runClassifier() async {
-    final result = await TfliteClassifierService.instance.classify(
-      widget.photoBytes,
-    );
-    final savedPath = await PhotoStorage.save(widget.photoBytes);
-    if (!mounted) return;
+    try {
+      final result = await TfliteClassifierService.instance.classify(
+        widget.photoBytes,
+      );
+      final savedPath = await PhotoStorage.save(widget.photoBytes);
+      if (!mounted) return;
 
-    // Sa ilalim ng 70%, null ang species (ayon sa paper).
-    final species = result.isHighConfidence
-        ? KahoyStore.instance.speciesByCommonName(result.commonName)
-        : null;
+      if (result.commonName.isEmpty && result.scientificName.isEmpty) {
+        _showFriendlyError('The model could not be loaded. Please try again.');
+        return;
+      }
 
-    await KahoyStore.instance.addScan(
-      ScanHistory(
-        id: 'scan-${DateTime.now().microsecondsSinceEpoch}',
-        speciesId: species?.id,
-        imagePath: savedPath,
-        confidenceScore: result.confidence,
-        timestamp: DateTime.now(),
+      final species = result.isHighConfidence
+          ? KahoyStore.instance.speciesByCommonName(result.commonName)
+          : null;
+
+      await KahoyStore.instance.addScan(
+        ScanHistory(
+          id: 'scan-${DateTime.now().microsecondsSinceEpoch}',
+          speciesId: species?.id,
+          imagePath: savedPath,
+          confidenceScore: result.confidence,
+          timestamp: DateTime.now(),
+        ),
+      );
+
+      if (!mounted) return;
+
+      if (result.isHighConfidence) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => ResultScreen(image: widget.image, result: result),
+          ),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => LowConfidenceScreen(image: widget.image),
+          ),
+        );
+      }
+    } catch (_) {
+      if (!mounted) return;
+      _showFriendlyError('The model could not be loaded. Please try again.');
+    }
+  }
+
+  void _showFriendlyError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.forest,
+        content: Text(message, style: AppTextStyles.captureTip),
       ),
     );
-
-    if (!mounted) return;
-
-    if (result.isHighConfidence) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => ResultScreen(image: widget.image, result: result),
-        ),
-      );
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => LowConfidenceScreen(image: widget.image),
-        ),
-      );
+    if (Navigator.canPop(context)) {
+      Navigator.of(context).pop();
     }
   }
 

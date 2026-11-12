@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../mock/mock_data.dart';
@@ -140,6 +143,27 @@ class KahoyStore extends ChangeNotifier {
     } catch (e) {
       debugPrint('[Kahoy] hindi na-save ang scan: $e');
     }
+  }
+
+  Future<void> clearHistory() async {
+    try {
+      final appDir = await getApplicationDocumentsDirectory();
+      final scansDir = Directory(p.join(appDir.path, 'scans'));
+      if (await scansDir.exists()) {
+        final files = await scansDir.list().toList();
+        for (final entry in files) {
+          if (entry is File) {
+            await entry.delete();
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('[Kahoy] hindi na-delete ang saved files: $e');
+    }
+
+    await _db?.delete('ScanHistory');
+    _scans = <ScanHistory>[];
+    notifyListeners();
   }
 
   // ---------------------------------------------------------------- Mapping

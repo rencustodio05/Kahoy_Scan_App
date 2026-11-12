@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -33,19 +34,59 @@ class _CaptureScreenState extends State<CaptureScreen> {
       final photo = await pick();
       if (!mounted || photo == null) return;
       await Navigator.of(context).push<void>(
-        MaterialPageRoute<void>(
-          builder: (_) => ReviewScreen(photo: photo),
-        ),
+        MaterialPageRoute<void>(builder: (_) => ReviewScreen(photo: photo)),
       );
     } on CaptureDeniedException catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: AppColors.forest,
-          content: Text(error.message, style: AppTextStyles.captureTip),
-        ),
+      await _showPermissionDialog(error.message);
+    } on FormatException {
+      if (!mounted) return;
+      _showFriendlyMessage(
+        'We could not read that image. Please choose another photo.',
+      );
+    } catch (_) {
+      if (!mounted) return;
+      _showFriendlyMessage(
+        'Something went wrong while opening the image. Please try again.',
       );
     }
+  }
+
+  Future<void> _showPermissionDialog(String message) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.white,
+        title: const Text('Permission needed'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Not now'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop(true);
+              await openAppSettings();
+            },
+            child: const Text('Open settings'),
+          ),
+        ],
+      ),
+    );
+
+    if (result == false || result == null) {
+      return;
+    }
+  }
+
+  void _showFriendlyMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: AppColors.forest,
+        content: Text(message, style: AppTextStyles.captureTip),
+      ),
+    );
   }
 
   @override
@@ -282,10 +323,7 @@ class _Corner extends StatelessWidget {
       width: 40,
       height: 40,
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: borderRadius,
-          border: border,
-        ),
+        decoration: BoxDecoration(borderRadius: borderRadius, border: border),
       ),
     );
   }
