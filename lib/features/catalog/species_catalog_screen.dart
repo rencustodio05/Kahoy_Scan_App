@@ -76,7 +76,11 @@ class _SpeciesCatalogScreenState extends State<SpeciesCatalogScreen> {
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 12),
               child: Row(
                 children: [
-                  const Icon(Icons.help_outline, size: 14, color: AppColors.brown),
+                  const Icon(
+                    Icons.help_outline,
+                    size: 14,
+                    color: AppColors.brown,
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     'Available offline',
@@ -135,7 +139,11 @@ class _BackButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: _cardBorder),
           ),
-          child: const Icon(Icons.arrow_back, size: 22, color: AppColors.forestDeep),
+          child: const Icon(
+            Icons.arrow_back,
+            size: 22,
+            color: AppColors.forestDeep,
+          ),
         ),
       ),
     );
@@ -173,7 +181,11 @@ class _SearchField extends StatelessWidget {
             fontSize: 16,
             color: AppColors.brown.withValues(alpha: 0.6),
           ),
-          prefixIcon: const Icon(Icons.search, size: 22, color: AppColors.brown),
+          prefixIcon: const Icon(
+            Icons.search,
+            size: 22,
+            color: AppColors.brown,
+          ),
           suffixIcon: controller.text.isEmpty
               ? null
               : IconButton(
